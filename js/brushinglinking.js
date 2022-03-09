@@ -188,6 +188,65 @@ d3.csv("data/iris.csv").then((data) => {
   //TODO: Barchart with counts of different species
   {
     // Bar chart code here 
+
+    let xKey3 = "Species";
+    let yKey3 = "Petal_Width";
+
+    // Find max x
+    let maxX3 = d3.max(data, (d) => { return d[xKey3]; });
+
+    // Create X scale
+    let x3 = d3.scaleBand()
+                .domain(["Setosa","Versicolor","Virginica"])
+                .range([margin.left, width-margin.right]); 
+    
+    // Add x axis 
+    svg3.append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`) 
+        .call(d3.axisBottom(x3))   
+        .attr("font-size", '20px')
+        .call((g) => g.append("text")
+                      .attr("x", width - margin.right)
+                      .attr("y", margin.bottom - 4)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(xKey3)
+      );
+
+    // Finx max y 
+    let maxY3 = d3.max(data, (d) => { return d[yKey2]; });
+
+    // Create Y scale
+    let y2 = d3.scaleLinear()
+                .domain([0, maxY2])
+                .range([height - margin.bottom, margin.top]); 
+
+    // Add y axis 
+    svg3.append("g")
+        .attr("transform", `translate(${margin.left}, 0)`) 
+        .call(d3.axisLeft(y2)) 
+        .attr("font-size", '20px') 
+        .call((g) => g.append("text")
+                      .attr("x", 0)
+                      .attr("y", margin.top)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(yKey2)
+      );
+
+    // Add points
+    const myBars3 = svg3.selectAll("bar")
+                            .data(data)
+                            .enter()
+                              .append("rectangle")
+                              .attr("id", (d) => d.id)
+                              .attr("x", (d) => x2(d[xKey2]))
+                              .attr("y", (d) => y2(d[yKey2]))
+                              .attr("height", 8)
+                              .attr("width",8)
+                              .style("fill", (d) => color(d.Species))
+                              .style("opacity", 0.5);
+
   }
 
   //Brushing Code---------------------------------------------------------------------------------------------
