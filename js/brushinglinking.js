@@ -203,46 +203,31 @@ d3.csv("data/iris.csv").then((data) => {
 
     // Create X scale
     let x3 = d3.scaleBand()
-                .domain(["setosa", "versicolor", "virginica"])
+                .domain(d3.range(data1.length))
                 .range([margin.left, width-margin.right]); 
     
  
-
-     // Find max y 
-    let maxY3 = d3.max(data1, function(d) { return d.score; });
+    // Find max y 
+    let maxY3 = d3.max(data1, function(d) { return d.count; });
 
     // Create Y scale
     let y3 = d3.scaleLinear()
                 .domain([0, maxY3])
                 .range([height - margin.bottom, margin.top]); 
 
-
-
-     // Add x axis 
     svg3.append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`) 
-        .call(d3.axisBottom(x3))   
-        .attr("font-size", '20px')
-        .call((g) => g.append("text")
-                      .attr("x", width - margin.right)
-                      .attr("y", margin.bottom - 4)
-                      .attr("fill", "black")
-                      .attr("text-anchor", "end")
-                      .text(xKey3)
-      );
+   .attr("transform", `translate(${margin.left}, 0)`) 
+   .call(d3.axisLeft(y3)) 
+   .attr("font-size", '20px')
+   
 
-    // Add y axis 
+    // TODO: What does each line of this code do?
+    // shifts the scale and ands the ticks of the scale 
     svg3.append("g")
-        .attr("transform", `translate(${margin.left}, 0)`) 
-        .call(d3.axisLeft(y3)) 
-        .attr("font-size", '20px') 
-        .call((g) => g.append("text")
-                      .attr("x", 0)
-                      .attr("y", margin.top)
-                      .attr("fill", "black")
-                      .attr("text-anchor", "end")
-                      .text(yKey3)
-      );
+    .attr("transform", `translate(0,${height - margin.bottom})`) 
+    .call(d3.axisBottom(x3) 
+            .tickFormat(i => data1[i].species))  
+    .attr("font-size", '20px'); 
 
     // Add points
     const myBars = svg3.selectAll("bar")
@@ -251,14 +236,10 @@ d3.csv("data/iris.csv").then((data) => {
         .append("rect")
           .attr("class", "bar") 
           .attr("x", (d,i) => x3(i)) 
-          .attr("y", (d) => y3(d.score)) 
-          .attr("height", (d) => (height - margin.bottom)) 
+          .attr("y", (d) => y3(d.count)) 
+          .attr("height", (d) => (height - margin.bottom) - y3(d.count)) 
           .attr("width", x3.bandwidth()) 
-   //       .attr("x", (d) => x3(d[xKey3]))
-   //       .attr("y", (d) => y3(d[yKey3]))
-   //       .attr("height", (d) => (height - margin.bottom))
-   //       .attr("width", x3.bandwidth()) 
-          .style("fill", (d) => color(d.Species))
+          .style("fill", (d) => color(d.species))
           .style("opacity", 0.5);
 
   }
