@@ -1,7 +1,7 @@
 // Set margins and dimensions 
-const margin = { top: 50, right: 50, bottom: 50, left: 200 };
-const width = 900; //- margin.left - margin.right;
-const height = 650; //- margin.top - margin.bottom;
+const margin = { top: 50, right: 100, bottom: 50, left: 150 };
+const width =700; //- margin.left - margin.right;
+const height = 450; //- margin.top - margin.bottom;
 
 // Append svg object to the body of the page to house Scatterplot1
 const svg1 = d3.select("#vis-holder")
@@ -77,7 +77,7 @@ d3.csv("data/iris.csv").then((data) => {
                       .text(xKey1)
       );
 
-    // Finx max y 
+    // Find max y 
     let maxY1 = d3.max(data, (d) => { return d[yKey1]; });
 
     // Create Y scale
@@ -186,21 +186,39 @@ d3.csv("data/iris.csv").then((data) => {
   }
 
   //TODO: Barchart with counts of different species
-  {
+ {
     // Bar chart code here 
+    // Hardcoded barchart data
+    const data1 = [
+      {species: 'setosa', count: 50},
+      {species: 'versicolor', count: 50},
+      {species: 'virginica', count: 50}
+    ];
 
     let xKey3 = "Species";
-    let yKey3 = "Petal_Width";
+    let yKey3 = "Count";
 
     // Find max x
-    let maxX3 = d3.max(data, (d) => { return d[xKey3]; });
+    let maxX3 = d3.max(data1, function(d) { return d.score; });
 
     // Create X scale
     let x3 = d3.scaleBand()
-                .domain(["Setosa","Versicolor","Virginica"])
+                .domain(["setosa", "versicolor", "virginica"])
                 .range([margin.left, width-margin.right]); 
     
-    // Add x axis 
+ 
+
+     // Find max y 
+    let maxY3 = d3.max(data1, function(d) { return d.score; });
+
+    // Create Y scale
+    let y3 = d3.scaleLinear()
+                .domain([0, maxY3])
+                .range([height - margin.bottom, margin.top]); 
+
+
+
+     // Add x axis 
     svg3.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`) 
         .call(d3.axisBottom(x3))   
@@ -213,39 +231,35 @@ d3.csv("data/iris.csv").then((data) => {
                       .text(xKey3)
       );
 
-    // Finx max y 
-    let maxY3 = d3.max(data, (d) => { return d[yKey2]; });
-
-    // Create Y scale
-    let y2 = d3.scaleLinear()
-                .domain([0, maxY2])
-                .range([height - margin.bottom, margin.top]); 
-
     // Add y axis 
     svg3.append("g")
         .attr("transform", `translate(${margin.left}, 0)`) 
-        .call(d3.axisLeft(y2)) 
+        .call(d3.axisLeft(y3)) 
         .attr("font-size", '20px') 
         .call((g) => g.append("text")
                       .attr("x", 0)
                       .attr("y", margin.top)
                       .attr("fill", "black")
                       .attr("text-anchor", "end")
-                      .text(yKey2)
+                      .text(yKey3)
       );
 
     // Add points
-    const myBars3 = svg3.selectAll("bar")
-                            .data(data)
-                            .enter()
-                              .append("rectangle")
-                              .attr("id", (d) => d.id)
-                              .attr("x", (d) => x2(d[xKey2]))
-                              .attr("y", (d) => y2(d[yKey2]))
-                              .attr("height", 8)
-                              .attr("width",8)
-                              .style("fill", (d) => color(d.Species))
-                              .style("opacity", 0.5);
+    const myBars = svg3.selectAll("bar")
+        .data(data1)
+        .enter()
+        .append("rect")
+          .attr("class", "bar") 
+          .attr("x", (d,i) => x3(i)) 
+          .attr("y", (d) => y3(d.score)) 
+          .attr("height", (d) => (height - margin.bottom)) 
+          .attr("width", x3.bandwidth()) 
+   //       .attr("x", (d) => x3(d[xKey3]))
+   //       .attr("y", (d) => y3(d[yKey3]))
+   //       .attr("height", (d) => (height - margin.bottom))
+   //       .attr("width", x3.bandwidth()) 
+          .style("fill", (d) => color(d.Species))
+          .style("opacity", 0.5);
 
   }
 
