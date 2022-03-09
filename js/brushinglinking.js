@@ -42,12 +42,14 @@ const color = d3.scaleOrdinal()
                 .domain(["setosa", "versicolor", "virginica"])
                 .range(["#FF7F50", "#21908dff", "#fde725ff"]);
 
+// We will need scales for all of the following charts to be global
+  let x1, y1, x2, y2, x3, y3;  
+
+
 // Plotting 
 d3.csv("data/iris.csv").then((data) => {
   
-  // We will need scales for all of the following charts to be global
-  let x1, y1, x2, y2, x3, y3;  
-
+  
   // We will need keys to be global
   let xKey1, yKey1, xKey2, yKey2, xKey3, yKey3;
 
@@ -296,7 +298,7 @@ d3.csv("data/iris.csv").then((data) => {
   
       //TODO: Give bold outline to all points in Scatterplot2 corresponding to points within the brush region in Scatterplot1
       myCircles2.classed("selected", function(d) { 
-        return isBrushed(selection, x1(d.Sepal_Length), y1(d.Petal_Length))
+        return isBrushed(selection, x2(d.Sepal_Width), y2(d.Petal_Width))
       })
     }
     
@@ -334,9 +336,9 @@ d3.csv("data/iris.csv").then((data) => {
       if (brush_coords === null) return;
 
       var x0 = brush_coords[0][0],
-        x1 = brush_coords[1][0],
-        y0 = brush_coords[0][1],
-        y1 = brush_coords[1][1];
+      x1 = brush_coords[1][0],
+      y0 = brush_coords[0][1],
+      y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1; // This return TRUE or FALSE depending on if the points is in the selected area
     };
 
