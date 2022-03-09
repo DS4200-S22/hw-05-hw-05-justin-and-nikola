@@ -219,6 +219,12 @@ d3.csv("data/iris.csv").then((data) => {
    .attr("transform", `translate(${margin.left}, 0)`) 
    .call(d3.axisLeft(y3)) 
    .attr("font-size", '20px')
+   .call((g) => g.append("text")
+                      .attr("x", 0)
+                      .attr("y", margin.top)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(yKey3));
    
 
     // TODO: What does each line of this code do?
@@ -227,7 +233,15 @@ d3.csv("data/iris.csv").then((data) => {
     .attr("transform", `translate(0,${height - margin.bottom})`) 
     .call(d3.axisBottom(x3) 
             .tickFormat(i => data1[i].species))  
-    .attr("font-size", '20px'); 
+    .attr("font-size", '20px')
+    .call((g) => g.append("text")
+                      .attr("x", width - margin.right)
+                      .attr("y", margin.bottom - 4)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(xKey3)
+    );
+
 
     // Add points
     const myBars = svg3.selectAll("bar")
