@@ -111,8 +111,15 @@ d3.csv("data/iris.csv").then((data) => {
                               .style("opacity", 0.5);
 
     //TODO: Define a brush (call it brush1)
+    let brush1 = d3.brush()
+    brush1.on("brush", updateChart1);
+      
 
     //TODO: Add brush1 to svg1
+    svg1.append("g")
+      .attr("class", "brush")
+      .call(brush1);
+
     
   }
 
@@ -177,13 +184,19 @@ d3.csv("data/iris.csv").then((data) => {
                               .style("opacity", 0.5);
 
     //TODO: Define a brush (call it brush2)
+    let brush2 = d3.brush()
+    
+      
 
     //TODO: Add brush2 to svg2
-    
+    svg2.append("g")
+      .attr("class", "brush")
+      .call(brush2)
 
 
 
-  }
+}
+  
 
   //TODO: Barchart with counts of different species
  {
@@ -258,24 +271,38 @@ d3.csv("data/iris.csv").then((data) => {
   }
 
   //Brushing Code---------------------------------------------------------------------------------------------
-    
+
+  })
   // Call to removes existing brushes 
   function clear() {
       svg1.call(brush1.move, null);
       
       //TODO: add code to clear existing brush from svg2
-  }
+      svg2.call(brush2.move, null);
+    }
 
   // Call when Scatterplot1 is brushed 
   function updateChart1(brushEvent) {
       
       //TODO: Find coordinates of brushed region 
-  
-      //TODO: Give bold outline to all points within the brush region in Scatterplot1
+      let coords = d3.event.selection;
 
+
+      svg1.selectAll("myCircles1")
+        .style("fill", updateChart1(brush1)) 
+          let cx = d3.select(this).attr("cx")
+          let cy = d3.select(this).attr("cy")
+
+          let selected = isBrushed(coords, cx, cy)
+          return selected ? "red" : "blue"
+        
+      
+      //TODO: Give bold outline to all points within the brush region in Scatterplot1
+      
+  
       //TODO: Give bold outline to all points in Scatterplot2 corresponding to points within the brush region in Scatterplot1
     
-  }
+  
 
   // Call when Scatterplot2 is brushed 
   function updateChart2(brushEvent) {
@@ -302,4 +329,4 @@ d3.csv("data/iris.csv").then((data) => {
         y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1; // This return TRUE or FALSE depending on if the points is in the selected area
     }
-});
+};
